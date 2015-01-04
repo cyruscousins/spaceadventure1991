@@ -1,5 +1,6 @@
 #! /bin/bash
 
+mkdir -p bin
 cd src
-javac PhysicsFrame.java -d ../bin
+javac *.java -d ../bin
 
