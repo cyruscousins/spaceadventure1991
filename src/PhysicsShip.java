@@ -59,24 +59,74 @@ public class PhysicsShip extends PhysicsNode {
 			applyForce(Vector.vectorFromMH(enginePower / mass * dt, heading));
 		}
 		if (world.keys[controls[FIRE]]){
-			if (gunCoolDownTimer <= 0 && energy>=10){
-				gunCoolDownTimer = .1;
-				energy -= 5;
-				double cosHead = Math.cos(heading);
-				double sinHead = Math.sin(heading);
-				Vector bulletPosition = position.duplicate();
-				bulletPosition.vectorAdd(new Vector(cosHead*radius*2, sinHead*radius*2));
-				Vector bulletVelocity = velocity.duplicate();
-				bulletVelocity.vectorAdd(new Vector(cosHead*gunVelocity, sinHead*gunVelocity));
-				PhysicsNode bullet = new PhysicsNode(world, name + " projectile", SpaceMath.randomColor(), rotation, heading, bulletVelocity, bulletPosition, gunPower, 1);
-				world.addObject(bullet);
+		  if(world.keys[controls[STABILIZE]]){
+		    if (gunCoolDownTimer <= 0 && energy >= 20){
+		    
+				  gunCoolDownTimer = .2;
+				  energy -= 5;
+				  
+				  double bulletAngle = (2 + Math.random()) * .05;
+				  {
+				  
+				    heading -= bulletAngle;
+				    
+				    double cosHead = Math.cos(heading);
+				    double sinHead = Math.sin(heading);
+				    Vector bulletPosition = position.duplicate();
+				    bulletPosition.vectorAdd(new Vector(cosHead*radius*3, sinHead*radius*3));
+				    
+				    heading += bulletAngle;
+				    
+				    Vector bulletVelocity = velocity.duplicate();
+				    bulletVelocity.vectorAdd(new Vector(cosHead*gunVelocity, sinHead*gunVelocity));
+				    PhysicsNode bullet = new PhysicsNode(world, name + " projectile", SpaceMath.randomColor(), rotation, heading, bulletVelocity, bulletPosition, gunPower * 75, 5);
+				    world.addObject(bullet);
+          }
+          {
+				  
+				    heading += bulletAngle;
+				    
+				    double cosHead = Math.cos(heading);
+				    double sinHead = Math.sin(heading);
+				    Vector bulletPosition = position.duplicate();
+				    bulletPosition.vectorAdd(new Vector(cosHead*radius*3, sinHead*radius*3));
+				    
+				    heading -= bulletAngle;
+				    
+				    Vector bulletVelocity = velocity.duplicate();
+				    bulletVelocity.vectorAdd(new Vector(cosHead*gunVelocity, sinHead*gunVelocity));
+				    PhysicsNode bullet = new PhysicsNode(world, name + " projectile", SpaceMath.randomColor(), rotation, heading, bulletVelocity, bulletPosition, gunPower * 75, 5);
+				    world.addObject(bullet);
+          }
+		    }
+		  }
+		  else{
+			  if (gunCoolDownTimer <= 0 && energy>=10){
+		      gunCoolDownTimer = .1;
+		      energy -= 3;
+		      
+				  double cosHead = Math.cos(heading);
+				  double sinHead = Math.sin(heading);
+				  Vector bulletPosition = position.duplicate();
+				  bulletPosition.vectorAdd(new Vector(cosHead*radius*2, sinHead*radius*2));
+				  Vector bulletVelocity = velocity.duplicate();
+				  bulletVelocity.vectorAdd(new Vector(cosHead*gunVelocity, sinHead*gunVelocity));
+				  
+				  PhysicsNode bullet = new PhysicsNode(world, name + " projectile", SpaceMath.randomColor(), rotation, heading, bulletVelocity, bulletPosition, gunPower, 1);
+				  
+				  //PhysicsNode bullet = new MassBomb(this, null);
+				  world.addObject(bullet);
+		    }
 			}
 		}
 		else if (world.keys[controls[STABILIZE]]){
 			rotation *= Math.pow(.25, dt);
 		}
+		
+  	rotation *= Math.pow(.5, dt);
+  	
 		if (gunCoolDownTimer > 0) gunCoolDownTimer -= dt;
-		if (energy < maxEnergy) energy += 5 * dt;
+		if (energy < maxEnergy) energy += 15 * dt;
 		if (health < maxHealth) health += 1 * dt;
 		super.update(dt);
 	}

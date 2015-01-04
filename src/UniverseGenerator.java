@@ -7,21 +7,63 @@ import java.util.Random;
 public class UniverseGenerator {
 	public static String[] starPrefixes = new String[]
 	    {
-			"Alpha", "Beta", "Gamma", "α", "β", "γ", "δ", "ο", "θ", "π", "ρ"
+		"α", "β", "γ", "δ", "ο", "θ", "π", "ρ"
 	    };
 	public static String[] starNames = new String[]
 		{
-			"Sol", "Centauri", "Pegasus", "Proximus", "16:10", "3000"
+			"Sol", "Centauri", "Pegasus", "Proximus", "16:10", "3000", "Orion", "Lucie"
 		};
 	public static byte[][] starCount = new byte[starPrefixes.length][starNames.length];
 	
 	public static String[] planetNames = new String[]
 	    {
-			"Barrass", "Meehan", "Katz", "Saeger", "Dylan", "Hemingway"
+			"Barrass", "Meehan", "Katz", "Saeger", "Dylan", "Hemingway", "Jessie"
 	    };
+
 	public static byte[] planetCount = new byte[planetNames.length];
 	
+	public static String[] moonNames = new String[]
+		{
+			"Luna", "Jyotsna", "Celeste", "Radiance", "Lumina"
+		};	
+	
+	public static byte[] moonCount = new byte[moonNames.length];
+	
 	public static Random rand = new Random();
+
+	public static String romanNumeral(int i){
+		String ret = "";
+		while(i > 1000){
+			ret += "M";
+			i -= 1000;
+		}
+		while(i > 500){
+			ret += "D";
+			i-=500;
+		}
+		while(i > 100){
+			ret += "C";
+			i-=100;
+		}
+		while(i > 50){
+			ret += "L";
+			i-=50;
+		}
+		while(i > 10){
+			ret += "X";
+			i-=10;
+		}
+		while(i > 5){
+			ret += "V";
+			i-=5;
+		}
+		while(i > 1){
+			ret += "I";
+			i-=1;
+		}
+		return ret;
+	}
+
 	public static String getStarName(){
 		int prefix = rand.nextInt(starPrefixes.length);
 		int name = rand.nextInt(starNames.length);
@@ -38,7 +80,20 @@ public class UniverseGenerator {
 		planetCount[name]++;
 		return planetNames[name] + planetCount[name] + " (" + starName + ")";
 	}
-	
+	public static	String getMoonName(){
+		int name = rand.nextInt(moonNames.length);
+		moonCount[name]++;
+		return moonNames[name] + " " + romanNumeral(moonCount[name] + 1);
+	}
+
+	public static String getAsteroidName(){
+		String name = "";
+		for(int i = 0; i < 1 + rand.nextInt(3); i++){
+			name += 'A' + rand.nextInt('Z' - 'A' + 1);
+		}
+		name += rand.nextInt(9999);
+		return name;
+	}
 	//Galaxy Creation Methods
 	public List<PhysicsNode> generateGalaxy(){
 		List<PhysicsNode> galaxy = new ArrayList<PhysicsNode>();
@@ -67,7 +122,7 @@ public class UniverseGenerator {
 		double base = .75;
 		double constant = mass * (1 - base);
 		
-		int systemCount = 6;
+		int systemCount = 2;
 		double[] masses = new double[systemCount];
 		double massCount = 0;
 		for(int i = 1; i < masses.length; i++){
@@ -130,7 +185,7 @@ public class UniverseGenerator {
 			int c = rand.nextInt(0xffffff + 1);
 			mass = asteroidConstant * Math.pow(base, count);
 			count ++;
-			solarSystem.add(CelestialBody.getSatelite(world, sun, "Asteroid Belt (" + sun.name + " System)", c, radius * .4f + rand.nextDouble() * radius * .2f, rand.nextDouble() * Math.PI * 2, mass, SpaceMath.getRadius(mass, 9))); //asteroids
+			solarSystem.add(CelestialBody.getSatelite(world, sun, getAsteroidName() + "(" + sun.name + " System)", c, radius * .4f + rand.nextDouble() * radius * .2f, rand.nextDouble() * Math.PI * 2, mass, SpaceMath.getRadius(mass, 9))); //asteroids
 			massLeft -= mass;
 		}
 		while (mass > 10);
@@ -170,7 +225,7 @@ public class UniverseGenerator {
 				c = rand.nextInt(0xffffff + 1);
 				mass = sateliteConstant * Math.pow(sateliteBase, sateliteCount);
 				sateliteCount ++;
-				solarSystem.add(CelestialBody.getSatelite(world, sun, planet.name + " Satelite", c, radius * .4f + rand.nextDouble() * radius * .2f, SpaceMath.randomθ(), mass, SpaceMath.getRadius(mass, 9))); //asteroids
+				solarSystem.add(CelestialBody.getSatelite(world, sun, getMoonName() + "(" + planet.name + " Satelite" + ")", c, radius * .4f + rand.nextDouble() * radius * .2f, SpaceMath.randomθ(), mass, SpaceMath.getRadius(mass, 9))); //asteroids
 				massLeft -= mass;
 			}
 			while (sateliteMass > 10);

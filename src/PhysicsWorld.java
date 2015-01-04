@@ -124,6 +124,7 @@ public class PhysicsWorld implements KeyListener{
 				for(int j = 0; j < stats.length; j++){
 					g.drawString(names[j] + ": " + stats[j], 150, 170 + 20 * j);
 					g.fillRect(250, 160 + 20 * j, stats[j], 10);
+					g.draw3DRect(250, 160 + 20 * j, stats[j], 10, index == j);
 				}
 
 				frame.renderToScreen();
@@ -138,7 +139,7 @@ public class PhysicsWorld implements KeyListener{
 			}
 			int color = stats[2] << 16 | stats[1] << 8 | stats[0];
 			//Color color = new Color(stats[0], stats[1], stats[2]);
-			PhysicsShip ship = new PhysicsShip("Star Ship α" + i, color, 0, Math.PI/2, new Vector(), position, 1000 + stats[4], 10, this, 10000 + stats[3] * 100000, stats[4] + 100, stats[5] + 10);
+			PhysicsShip ship = new PhysicsShip("Star Ship α" + i, color, 0, Math.PI/2, new Vector(), position, 1000 + stats[4], 10, this, (10 + stats[3]) * 200000, stats[4] + 100, (10 + stats[5]) * 10);
 			ship.setControls(i);
 			ships.add(ship);
 			keys[KeyEvent.VK_ENTER] = false;
@@ -146,7 +147,7 @@ public class PhysicsWorld implements KeyListener{
 		objects.addAll(ships);
 	}
 
-	public static final double G = .1, CC = .00005;
+	public static final double G = .01, CC = .00005;
 
 	public DecimalFormat df = new DecimalFormat("0000.000");
 	public DecimalFormat sensitiveDF = new DecimalFormat("00.000000");
@@ -334,7 +335,7 @@ public class PhysicsWorld implements KeyListener{
 				
 				//test for in bounds of the screen.
 				Vector cDisplacement = object.position.duplicateVectorSubtract(cam);
-				if (cDisplacement.x + object.radius > - halfFieldWidth && cDisplacement.x - object.radius  < halfFieldWidth &&
+				if (true && cDisplacement.x + object.radius > - halfFieldWidth && cDisplacement.x - object.radius  < halfFieldWidth &&
 					cDisplacement.y + object.radius > - halfFieldHeight && cDisplacement.y - object.radius < halfFieldHeight)
 					object.render(frame.buffer, camX, camY, zoom);
 				else{
